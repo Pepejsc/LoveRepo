@@ -1,4 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Para mi Estrellita</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700&display=swap');
+
+        /* === CONFIGURACIÓN BÁSICA === */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #fff5e6;
+            min-height: 100vh;
+            font-family: 'Nunito', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            /* Evita scroll innecesario */
+        }
+
+        .card {
+            background: #fff;
+            width: 100%;
+            height: 100vh;
+            /* Ocupa toda la pantalla en celular */
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            /* En celular: Texto arriba, Árbol abajo */
+            position: relative;
+        }
+
+        /* === SECCIÓN DE TEXTO (ARRIBA) === */
+        .text-section {
+            flex: 0 0 auto;
+            /* No crece más de lo necesario */
+            padding: 30px 20px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.85);
+            /* Fondo semitransparente para leer bien */
+        }
+
+        h1 {
+            font-size: 1.1rem;
+            color: #8b4513;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        p.quote {
+            font-size: 1.6rem;
+            font-family: 'Dancing Script', cursive;
+            color: #d62828;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        #timer {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #c1121f;
+            background: #ffe5e5;
+            padding: 8px 15px;
+            border-radius: 15px;
+            display: inline-block;
+        }
+
+        /* === SECCIÓN DEL ÁRBOL (ABAJO) === */
+        .tree-section {
+            flex: 1;
+            /* Ocupa todo el espacio sobrante */
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            /* Pega el árbol al fondo */
+            padding-bottom: 20px;
+            overflow: hidden;
+            /* Importante para que no aparezca scroll horizontal */
+        }
+
+        .trunk {
+            width: 26px;
+            height: 130px;
+            /* Altura del tronco */
+            background-color: #2d6a4f;
+            position: absolute;
+            bottom: 30px;
+            border-radius: 4px;
+            z-index: 1;
+        }
+
+        /* === ESTILOS DE LOS CORAZONES === */
+        .heart {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: red;
+            /* Color por defecto por si acaso */
+            opacity: 0;
+            /* EMPIEZAN INVISIBLES */
+            bottom: 30px;
+            left: 50%;
+            transform: scale(0) rotate(45deg);
+            transition: all 0.8s ease-out;
+            /* Transición suave */
+            z-index: 2;
+        }
+
+        .heart::before,
+        .heart::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: inherit;
+            border-radius: 50%;
+        }
+
+        .heart::before {
+            top: -50%;
+            left: 0;
+        }
+
+        .heart::after {
+            top: 0;
+            left: 50%;
+        }
+
+        /* === ¡ESTA ES LA REGLA QUE FALTABA! === */
+        /* Cuando JS añade la clase .placed, el corazón se vuelve visible */
+        .heart.placed {
+            opacity: 1 !important;
+        }
+
+        /* Animación de latido */
+        @keyframes pulse {
+            0% {
+                transform: scale(var(--scale)) rotate(45deg);
+            }
+
+            100% {
+                transform: scale(calc(var(--scale) * 1.15)) rotate(45deg);
+            }
+        }
+
+        /* === AJUSTES PARA PC (PANTALLA GRANDE) === */
+        @media (min-width: 768px) {
+            body {
+                background-color: #f2e6d8;
+            }
+
+            .card {
+                flex-direction: row;
+                /* Lado a lado */
+                width: 90%;
+                max-width: 900px;
+                height: 600px;
+                border-radius: 20px;
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            }
+
+            .text-section {
+                flex: 1;
+                align-items: flex-start;
+                text-align: left;
+                padding: 50px;
+                background: none;
+            }
+
+            .tree-section {
+                flex: 1.2;
+                padding-bottom: 40px;
+            }
+
+            .trunk {
+                height: 160px;
+                bottom: 40px;
+            }
+
+            .heart {
+                bottom: 40px;
+            }
+
+            h1 {
+                font-size: 1.3rem;
+            }
+
+            p.quote {
+                font-size: 2.2rem;
+                margin-bottom: 30px;
+            }
+
+            #timer {
+                font-size: 1.3rem;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <div class="text-section">
+            <h1>PARA LA ESTRELLITA MÁS HERMOSA DE MI CIELO</h1>
+            <p class="quote">Tú haces que mis días se llenen de color.</p>
             <div class="timer-container">
                 <div class="timer-label">La mejor coincidencia desde:</div>
                 <div id="timer">Calculando...</div>
             </div>
+        </div>
+
+        <div class="tree-section" id="treeContainer">
+            <div class="trunk"></div>
+        </div>
+    </div>
+
+    <script>
+        // === 1. FECHA (5 Nov 2023, 21:52) ===
+        const startDate = new Date(2025, 10, 5, 21, 52);
+
+        function updateTimer() {
+            const now = new Date();
+            const diff = now - startDate;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            document.getElementById("timer").innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        // === 2. ÁRBOL CORAZÓN ===
+        const treeContainer = document.getElementById('treeContainer');
+        const colors = ['#ff0054', '#ff5400', '#ffbd00', '#f72585', '#7209b7', '#b5179e', '#e01e37', '#d90429'];
+
+        function getHeartPoint(t) {
+            const x = 16 * Math.pow(Math.sin(t), 3);
+            const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+            return { x: x, y: y };
+        }
+
+        function createTree() {
+            // DETECCIÓN DE MÓVIL (Simple y efectiva)
+            const isMobile = window.innerWidth < 768;
+
+            // CONFIGURACIÓN
+            const totalHearts = isMobile ? 350 : 600; // Menos en móvil para que no se trabe
+            const scaleBase = isMobile ? 8 : 12; // Tamaño del árbol
+            const trunkHeight = isMobile ? 130 : 160;
+            const trunkBottom = isMobile ? 30 : 40;
+
+            for (let i = 0; i < totalHearts; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                treeContainer.appendChild(heart);
+
+                // MATEMÁTICAS DEL CORAZÓN
+                let t = Math.random() * Math.PI * 2;
+                let r = Math.sqrt(Math.random());
+
+                // Definición de borde
+                if (Math.random() < 0.2) r = 1;
+                else r = r * 0.9 + 0.1;
+
+                const point = getHeartPoint(t);
+
+                // Posición
+                let finalX = point.x * scaleBase * r;
+                let finalY = point.y * scaleBase * r;
+
+                // Aleatoriedad suave
+                finalX += (Math.random() - 0.5) * (isMobile ? 4 : 8);
+                finalY += (Math.random() - 0.5) * (isMobile ? 4 : 8);
+
+                const heartBottomY = -17 * scaleBase;
+                const yOffset = -heartBottomY;
+
+                heart.style.left = `calc(50% + ${finalX}px)`;
+                heart.style.bottom = `${trunkBottom + trunkHeight + finalY + yOffset - (isMobile ? 25 : 35)}px`;
+
+                // Escala
+                const size = 0.6 + Math.random() * 0.8;
+                heart.style.setProperty('--scale', size);
+
+                // ANIMACIÓN
+                const delay = i * 2;
+                setTimeout(() => {
+                    heart.classList.add('placed'); // Esto activa el opacity: 1
+                    heart.style.transform = `scale(${size}) rotate(45deg)`;
+                    heart.style.animation = `pulse ${1.5 + Math.random()}s infinite alternate`;
+                }, delay);
+            }
+        }
+
+        // Cargar inmediatamente
+        window.onload = createTree;
+    </script>
+</body>
+
+</html>
